@@ -11,10 +11,11 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
 
 public class PaintComponent extends Component implements MouseListener, MouseMotionListener {
 
-	Image curImage;
+	BufferedImage curImage;
 	Graphics2D draw;
 	int startX = -1, startY = -1;
 	int curX = -1, curY = -1;
@@ -89,7 +90,8 @@ public class PaintComponent extends Component implements MouseListener, MouseMot
 
 	public void paint(Graphics g){
 		if(curImage==null){
-			curImage = createImage(getWidth(), getHeight());
+			curImage = new BufferedImage(getWidth(),getHeight(),BufferedImage.TYPE_INT_RGB); 
+					createImage(getWidth(), getHeight());
 			
 			draw = (Graphics2D) curImage.getGraphics();
 			draw.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

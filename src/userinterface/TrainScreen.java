@@ -28,6 +28,8 @@ import java.awt.image.BufferedImage;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 
+import utils.ImageConversionAndSave;
+
 import java.awt.Font;
 
 public class TrainScreen extends JFrame implements ActionListener{
@@ -98,7 +100,8 @@ public class TrainScreen extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==btnSave){
-			// Do stuff here
+			ImageConversionAndSave save = new ImageConversionAndSave(paintPanel.curImage, Integer.parseInt(textField.getText()),10);
+			save.saveToFile();
 		}
 		else if (e.getSource()==btnTrain){
 			// Do stuff here
