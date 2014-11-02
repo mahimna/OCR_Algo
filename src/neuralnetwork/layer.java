@@ -16,9 +16,10 @@ public class layer {
 		
 	}
 	
-	public layer(List<neuron> neurons){
+	public layer(List<neuron> neurons, boolean getWeights){
 		this.neurons = neurons;
-		weights = getWeightValues(neurons);		
+		if(getWeights)
+			weights = getWeightValues(neurons);	
 	}
 	
 	private RealMatrix getWeightValues(List<neuron> neurons){
@@ -26,7 +27,7 @@ public class layer {
 		for (neuron neuron: neurons){
 			weightValues.add(neuron.weights);
 		}
-		double [][] transformedWeightValues = new double[neurons.size()][neurons.get(0).inputs.size()];
+		double [][] transformedWeightValues = new double[neurons.size()][neurons.get(0).inputs.size()+1];
 		for (int i = 0; i<neurons.size();i++){
 			List<Double> curWeights = neurons.get(i).weights;
 			for (int j = 0; j<curWeights.size();j++){

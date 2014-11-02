@@ -8,7 +8,7 @@ public class neuron {
 	List<neuron> inputs;
 	List<Double> weights;
 	
-	double value;
+	public double value;
 	
 	public neuron (){
 		
@@ -29,7 +29,7 @@ public class neuron {
 			value = 0;		
 	}
 	
-	private double computeValueFromInput(List<neuron>inputs,List<Double>weights){
+	public double computeValueFromInput(List<neuron>inputs,List<Double>weights){
 		double dotProduct = 0;
 		for (int i = 0; i<weights.size();i++){
 			if(i==0)
