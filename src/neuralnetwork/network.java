@@ -19,11 +19,15 @@ public class network {
 		layers = new ArrayList<layer>();
 		weights = new ArrayList<RealMatrix>();
 		List<neuron> firstLayer = new ArrayList<neuron>();
-		for (int i = 0; i<numNeuronsInEachLayer[0];i++){
-			neuron neuron = new neuron (0);
+		for (int i = 0; i<numNeuronsInEachLayer[0]+1;i++){
+			neuron neuron;
+			if(i==0)
+				neuron = new neuron(1);
+			else 
+				neuron = new neuron (Math.random());
 			firstLayer.add(neuron);
 		}
-		layers.add(new layer(firstLayer,false));
+		layers.add(new layer(firstLayer));
 		initializeLayers(numLayers, numNeuronsInEachLayer,firstLayer);		
 	}
 	
@@ -31,56 +35,90 @@ public class network {
 		layers = new ArrayList<layer>();
 		weights = new ArrayList<RealMatrix>();
 		List<neuron> firstLayer = new ArrayList<neuron>();
-		for (int i = 0; i<input.size();i++){
-			neuron neuron = new neuron (input.get(i));
+		for (int i = 0; i<input.size()+1;i++){
+			neuron neuron;
+			if(i==0)
+				neuron = new neuron(1);
+			else
+				neuron = new neuron (input.get(i-1));
 			firstLayer.add(neuron);
 		}
-		layers.add(new layer(firstLayer,false));
+		layers.add(new layer(firstLayer));
 		initializeLayers(numLayers, numNeuronsInEachLayer,firstLayer);		
 	}
 	
 	public network(int numLayers, int [] numNeuronsInEachLayer, List<neuron> input){
 		layers = new ArrayList<layer>();
 		weights = new ArrayList<RealMatrix>();
-		layers.add(new layer(input,false));
+		input.add(0, new neuron(1));
+		layers.add(new layer(input));
 		initializeLayers(numLayers,numNeuronsInEachLayer,input);
 	}
 	
-	public network(List<layer> layers){
-		this.layers = layers;
-		weights = new ArrayList<RealMatrix>();
-		for (int i = 1;i<layers.size();i++){
-			weights.add(layers.get(i).weights);
-		}
-	}
-		
 	public void initializeLayers(int numLayers, int [] numNeuronsInEachLayer,List<neuron> input){
 		for(int i = 1; i<numLayers;i++){
 			List<neuron> newLayer = new ArrayList<neuron>();
-			List<Double> weights = new ArrayList<Double>();
-			for (int j = 0; j<numNeuronsInEachLayer[i];j++){
-				weights.add(Math.random());
+			if(i==numLayers-1){
+				double [][] weightValues = new double [numNeuronsInEachLayer[i]][numNeuronsInEachLayer[i-1]+1];
+				for (int j = 0; j<numNeuronsInEachLayer[i];j++){
+					neuron neuron = new neuron();
+					neuron.setInputs(layers.get(i-1).neurons);
+					for (int k = 0;k<(numNeuronsInEachLayer[i-1]+1);k++){						
+						weightValues[j][k] = -5+Math.random()*10;
+					}
+					newLayer.add(neuron);
+				}
+				RealMatrix weightMatrix = MatrixUtils.createRealMatrix(weightValues);
+				weights.add(weightMatrix);
+			}else {
+				double [][] weightValues = new double [numNeuronsInEachLayer[i]][numNeuronsInEachLayer[i-1]+1];
+				for (int j = 0; j<numNeuronsInEachLayer[i]+1;j++){
+					neuron neuron = new neuron();
+					neuron.setInputs(layers.get(i-1).neurons);
+					if(j==0){
+						neuron.setValue(1);
+					}
+					else {
+						for (int k = 0;k<(numNeuronsInEachLayer[i-1]+1);k++){						
+							weightValues[j-1][k]= -5+Math.random()*10;
+						}					
+					}
+					newLayer.add(neuron);
+				}
+				RealMatrix weightMatrix = MatrixUtils.createRealMatrix(weightValues);
+				weights.add(weightMatrix);
 			}
-			for (int j = 0; j<numNeuronsInEachLayer[i];j++){
-				neuron neuron = new neuron();
-				neuron.inputs = layers.get(i-1).neurons;
-				neuron.weights = weights;	
-				newLayer.add(neuron);
-			}
-			layers.add(new layer(newLayer,true));
-		}
-		for (int i = 1;i<layers.size();i++){
-			weights.add(layers.get(i).weights);
+			layers.add(new layer(newLayer));
 		}
 	}
 	
 	public void PropogateForward(List<Double> inputs){
-		for (neuron neuron: layers.get(0).neurons){
-			neuron.value = inputs.get(0);
+		for (int i = 0; i<inputs.size()+1;i++){
+			neuron neuron = layers.get(0).neurons.get(i);
+			if(i==0){
+				neuron.setValue(1);
+			}
+			else{
+				neuron.setValue(inputs.get(i-1));
+			}
+				
 		}
 		for (int i = 1; i<layers.size();i++){
-			for (neuron neuron: layers.get(i).neurons){
-				neuron.value = neuron.computeValueFromInput(neuron.inputs, neuron.weights);
+			if(i!=layers.size()-1){				
+				for (int j = 0;j<layers.get(i).neurons.size();j++){
+					neuron neuron = layers.get(i).neurons.get(j);
+					if (j==0){
+						neuron.setValue(1);
+					}else {
+					    neuron.setValue(neuron.computeValueFromInput(weights.get(i-1).getRow(j-1)));
+					}
+				}
+			}
+			else{
+				for (int j = 0;j<layers.get(i).neurons.size();j++){
+					neuron neuron = layers.get(i).neurons.get(j);
+					neuron.setValue(neuron.computeValueFromInput(weights.get(i-1).getRow(j)));				
+				}
 			}
 		}
 	}
@@ -89,7 +127,7 @@ public class network {
 		RealMatrix [] errorMatrices = new RealMatrix[layers.size()];
 		double [][] levelErrorValues = new double[output.size()][1];
 		for (int i = 0; i<output.size();i++){
-			levelErrorValues[i][0] = layers.get(layers.size()-1).neurons.get(i).value-output.get(i);
+			levelErrorValues[i][0] = layers.get(layers.size()-1).neurons.get(i).getValue()-output.get(i);
 		}
 		errorMatrices[layers.size()-1] = MatrixUtils.createRealMatrix(levelErrorValues);
 		
@@ -98,7 +136,7 @@ public class network {
 			double [][] neuronValues = new double[neurons.size()][1];
 			double [][] oneValues = new double [neurons.size()][1];
 			for (int j = 0; j<neuronValues.length;j++){
-				neuronValues[j][0] = neurons.get(j).value;
+				neuronValues[j][0] = neurons.get(j).getValue();
 				oneValues[j][0] = 1;
 			}
 			RealMatrix neuronVals = MatrixUtils.createRealMatrix(neuronValues);
@@ -106,7 +144,7 @@ public class network {
 			RealMatrix firstPartOfErrorMatrix = (weights.get(i)).transpose().multiply(errorMatrices[i+1]);
 			RealMatrix subtractedFromOnes = oneVals.subtract(neuronVals);
 			double[][] neuronMultipliedOnes = new double[subtractedFromOnes.getRowDimension()][subtractedFromOnes.getColumnDimension()];
-			for (int j = 0; i<subtractedFromOnes.getRowDimension();j++){
+			for (int j = 0; j<subtractedFromOnes.getRowDimension();j++){
 				neuronMultipliedOnes[j][0] = neuronVals.getEntry(j, 0)*(subtractedFromOnes.getEntry(j, 0));
 			}
 			double [][] finalErrorValues = new double[neuronMultipliedOnes.length][1];
@@ -115,6 +153,9 @@ public class network {
 			}
 			
 			errorMatrices[i] = MatrixUtils.createRealMatrix(finalErrorValues);
+			
+			// Remove first value from the error matrix
+			errorMatrices[i] = errorMatrices[i].getSubMatrix(1, neuronMultipliedOnes.length-1, 0, 0);
 		}
 		return errorMatrices;
 	}
@@ -126,12 +167,18 @@ public class network {
 			List<neuron>neurons = layers.get(i).neurons;
 			double [][] neuronValues = new double[layers.get(i).neurons.size()][1];
 			for (int j = 0; j<neuronValues.length;j++){
-				neuronValues[j][0] = neurons.get(j).value;
+				neuronValues[j][0] = neurons.get(j).getValue();
 			}
 			RealMatrix neuronVals = MatrixUtils.createRealMatrix(neuronValues);
 			currentGradients.set(i, currentGradients.get(i).add(errorMatrices[i+1].multiply(neuronVals.transpose())));
 		}		
 		return currentGradients;
+	}
+	
+	public void updateWeights(List<RealMatrix> updatedWeights){
+		for (int i = 0; i < updatedWeights.size(); i++){	
+			weights.set(i, updatedWeights.get(i));	
+		}
 	}
 }
  
