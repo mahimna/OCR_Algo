@@ -10,12 +10,13 @@ import java.io.IOException;
 public class ImageConversionAndSave {
 
 	private BufferedImage image;
-	private double [][] matrixValues;
+	public double [][] matrixValues;
 	private int divider;
 	private int [] solution;
 	private int sol;
-	private final String path = "C:\\Users\\mgdave\\Documents\\1B\\OCR_Algo\\OCR_Algo\\trainingset\\";
+	private final String path = "C:\\Users\\mgdave\\Documents\\1B\\OCR_Algo\\OCR_Algo\\Logs\\";
 	
+		
 	public ImageConversionAndSave(BufferedImage image, int sol, int divider){
 		this.image = image;
 		this.divider = divider;
@@ -42,7 +43,7 @@ public class ImageConversionAndSave {
 				double number = 0.0;
 				for (int k = i*divider;k<(i+1)*divider&&k<image.getHeight();k++){
 					for (int l = j*divider;l<(j+1)*divider&&l<image.getWidth();l++){
-						int pix = image.getRGB(k, l);
+						int pix = image.getRGB(l,k);
 						int r = (pix>>16)&0xFF;
 						int g = (pix>>8)&0xFF;
 						int b = pix & 0xFF;
@@ -50,7 +51,7 @@ public class ImageConversionAndSave {
 						number++;
 					}
 				}
-				matrixValues[i][j] = sum/number/255.0;
+				matrixValues[i][j] = (255-sum/number);
 			}
 		}
 	}

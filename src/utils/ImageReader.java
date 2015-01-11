@@ -9,13 +9,13 @@ import java.util.List;
 public class ImageReader {
 
 	public List<Double>values;
-	public int [] solution;
-	public int sol;
+	public List<Double> solution;
 	private String fileName;
 	
 	public ImageReader (String fileName){
 		this.fileName = fileName;
 		values = new ArrayList<Double>();
+		solution = new ArrayList<Double>();
 	}
 	
 	public void readFromImage(){
@@ -33,8 +33,14 @@ public class ImageReader {
 				}
 				
 			}
-			
-			sol = Integer.parseInt(br.readLine());
+			line = br.readLine();
+	/*		while (line.contains(" ")){
+				int index = line.indexOf(" ");
+				String val = line.substring(0, index);
+				solution.add(Double.parseDouble(val));
+				line = line.substring(index+1);
+			}*/
+			solution.add(Double.parseDouble(line));
 			br.close();
 		}catch(IOException e){
 			
