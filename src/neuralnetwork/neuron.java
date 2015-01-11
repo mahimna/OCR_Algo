@@ -3,19 +3,19 @@ package neuralnetwork;
 import java.util.ArrayList;
 import java.util.List;
 
-public class neuron {
+public class Neuron {
 
-	private List<neuron> inputs;
+	private List<Neuron> inputs;
 	private double value;
 	
-	public neuron (){}
+	public Neuron (){}
 	
-	public neuron (double value){
-		inputs = new ArrayList<neuron>();
+	public Neuron (double value){
+		inputs = new ArrayList<Neuron>();
 		this.value = value;
 	}
 	
-	public neuron (List<neuron> inputs){
+	public Neuron (List<Neuron> inputs){
 		this.inputs = inputs;
 	}
 	
@@ -27,7 +27,7 @@ public class neuron {
 		return sigmoidFunction(dotProduct);
 	}
 	
-	public double computeValueFromInput(List<neuron>inputs,double[]weights){
+	public double computeValueFromInput(List<Neuron>inputs,double[]weights){
 		double dotProduct = 0;
 		for (int i = 0; i<weights.length;i++){
 			dotProduct += inputs.get(i).value*weights[i];
@@ -48,11 +48,11 @@ public class neuron {
 		this.value = value;
 	}	
 	
-	public List<neuron> getInputs(){
+	public List<Neuron> getInputs(){
 		return inputs;
 	}
 	
-	public void setInputs(List<neuron> inputs){
+	public void setInputs(List<Neuron> inputs){
 		this.inputs = inputs;
 	}
 }

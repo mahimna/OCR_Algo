@@ -6,16 +6,15 @@ import java.util.List;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 
-public class layer {
+public class Layer {
 
 	// Assuming associative array of neural network	
-	public List<neuron> neurons;
+	public List<Neuron> neurons;
 	
-	public layer (){
+	public Layer (){
 		
-	}
-	
-	public layer(List<neuron> neurons){
+	}	
+	public Layer(List<Neuron> neurons){
 		this.neurons = neurons;		
 	}
 }
