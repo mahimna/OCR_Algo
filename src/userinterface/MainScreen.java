@@ -4,8 +4,13 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
 import java.awt.BorderLayout;
+
 import javax.swing.JButton;
+
+import utils.DefaultTrainingSetReader;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -27,6 +32,8 @@ public class MainScreen {
 				}
 			}
 		});
+		
+		//DefaultTrainingSetReader reader = new DefaultTrainingSetReader(5);
 	}
 
 	/**
@@ -50,7 +57,8 @@ public class MainScreen {
 		JButton trainButton = new JButton("Train");
 		trainButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				TrainScreen trainScreen = new TrainScreen();
+				TrainingScreen trainScreen = new TrainingScreen();
+				//AddToTrainingSetScreen trainScreen = new AddToTrainingSetScreen();
 				trainScreen.setVisible(true);
 				
 			}
@@ -59,6 +67,8 @@ public class MainScreen {
 		JButton classifyButton = new JButton("Classify");
 		classifyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				ClassifyingScreen classifyScreen = new ClassifyingScreen();
+				classifyScreen.setVisible(true);
 			}
 		});
 		

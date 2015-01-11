@@ -23,9 +23,6 @@ public class PaintComponent extends Component implements MouseListener, MouseMot
 	public PaintComponent(){
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		setPreferredSize(new Dimension(10,10));
-		setMinimumSize(new Dimension(10,10));
-		setMaximumSize(new Dimension(10,10));
 		repaint();
 		setVisible(true);
 	}
@@ -39,14 +36,15 @@ public class PaintComponent extends Component implements MouseListener, MouseMot
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
+		
 		Point p = e.getPoint();
-		curX = p.x;
-		curY = p.y;
-		draw.drawLine(startX, startY, curX, curY);
+		//curX = p.x;
+		//curY = p.y;
+		//draw.drawLine(startX, startY, curX, curY);
+		draw.fillOval(e.getX(), e.getY(), 20,20);
 		repaint();
-		startX = curX;
-		startY = curY;
+		//startX = curX;
+		//startY = curY;
 	}
 
 	@Override
@@ -79,6 +77,8 @@ public class PaintComponent extends Component implements MouseListener, MouseMot
 		Point p = e.getPoint();
 		startX = p.x;
 		startY = p.y;
+		draw.fillOval(e.getX(), e.getY(), 10,10);
+		repaint();
 		
 	}
 
@@ -91,7 +91,7 @@ public class PaintComponent extends Component implements MouseListener, MouseMot
 	public void paint(Graphics g){
 		if(curImage==null){
 			curImage = new BufferedImage(getWidth(),getHeight(),BufferedImage.TYPE_INT_RGB); 
-					createImage(getWidth(), getHeight());
+			createImage(getWidth(), getHeight());
 			
 			draw = (Graphics2D) curImage.getGraphics();
 			draw.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
